@@ -1,0 +1,64 @@
+/* src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Establece estilos base para el HTML */
+  html {
+    /* Configura el color de fondo y texto por defecto (modo CLARO) */
+    background-color: #f8fafc; /* Gris muy claro */
+    color: #1f2937; /* Gris oscuro para el texto */
+    /* Asegura que el HTML ocupa toda la altura, esencial para el fondo */
+    min-height: 100vh;
+  }
+
+  /* Aplica estilos al HTML cuando tiene la clase 'dark' */
+  .dark html {
+    background-color: #121212; /* Gris oscuro para el fondo */
+    color: #e0e0e0; /* Blanco para el texto */
+  }
+
+  /* Establece estilos base para el Body */
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* El body hereda el fondo y color del html, o lo puede ignorar si el html ya lo define para todo el viewport */
+    /* Establecerlo a transparente asegura que el fondo del html sea visible */
+    background-color: transparent;
+    color: inherit;
+    min-height: 100vh; /* Asegura que el body también ocupe toda la altura */
+  }
+}
+
+@layer utilities {
+  /* Animación de las barras de carga */
+  @keyframes loading-animation {
+    0%, 100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+
+  .loading-bar {
+    animation: loading-animation 1.2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  .loading-bar.animation-delay-200 {
+    animation-delay: -0.2s;
+  }
+
+  .loading-bar.animation-delay-400 {
+    animation-delay: -0.4s;
+  }
+
+  .loading-bar.animation-delay-600 {
+    animation-delay: -0.6s;
+  }
+}

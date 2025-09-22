@@ -1,0 +1,11 @@
+### Dependencias principales
+npm install react react-dom react-router-dom axios classnames framer-motion lucide-react
+
+### Desarrollo
+npm install -D vite @vitejs/plugin-react tailwindcss @tailwindcss/cli postcss autoprefixer
+
+### Tailwind init
+npx @tailwindcss/cli -i ./src/index.css -o ./src/tailwind.css --watch
+
+### Tabler Icons
+npm install @tabler/icons-react
