@@ -5,7 +5,6 @@ import {
   IconSun,
   IconMoon,
   IconHome,
-  IconBooks,
   IconPhone,
   IconSettings,
   IconBrush,
@@ -15,6 +14,9 @@ import {
   IconLogout,
   IconUserCircle,
   IconChevronDown,
+  IconChartInfographic, // Icono para Calificaciones y Asistencias
+  IconBulb, // Icono para Ayuda y Guía de Uso
+  IconMail
 } from "@tabler/icons-react";
 import { useTheme } from "../../contexts/useTheme";
 
@@ -29,11 +31,16 @@ function Header({ onLoginClick }) {
   const [userProfilePic, setUserProfilePic] = useState("https://via.placeholder.com/40");
   // Usamos el hook del tema
   const { theme, setTheme } = useTheme();
+
+  // Nuevas opciones de menú
   const menuItems = [
     { label: "Inicio", href: "/", icon: <IconHome size={18} /> },
-    { label: "Cursos", href: "/courses", icon: <IconBooks size={18} /> },
+    { label: "Calificaciones y Asistencias", href: "/grades", icon: <IconChartInfographic size={18} /> },
+    { label: "Comunicados y Avisos", href: "/announcements", icon: <IconMail size={18} /> },
+    { label: "Ayuda y Guía de Uso", href: "/help", icon: <IconBulb size={18} /> },
     { label: "Contacto", href: "/contact", icon: <IconPhone size={18} /> },
   ];
+
   const handleLogin = () => { setIsLoggedIn(true); };
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -46,31 +53,21 @@ function Header({ onLoginClick }) {
 
   return (
     <header className="bg-red-600 dark:bg-gray-900 text-white shadow-md p-4 flex justify-between items-center relative z-20">
-      {/* Izquierda: Menú hamburguesa (móvil) + logo */}
+      {/* Izquierda: Menú hamburguesa + logo */}
       <div className="flex items-center space-x-3">
-        <button onClick={() => setMenuOpen(!menuOpen)} className="text-white focus:outline-none md:hidden">
+        {/* Botón del menú ahora visible tanto en móvil como en escritorio */}
+        <button onClick={() => setMenuOpen(!menuOpen)} className="text-white focus:outline-none">
           {menuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
         </button>
         <span className="font-bold text-lg">I.E. 88336 GVP</span>
       </div>
-      {/* Menú de escritorio (visible en md y superior) */}
-      <nav className="hidden md:flex items-center space-x-2">
-        {menuItems.map((item, index) => (
-          <Link
-            key={index}
-            to={item.href}
-            // Clases para que parezca un botón
-            className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </Link>
-        ))}
+
+      {/* Derecha: Botones de usuario y tema (siempre visibles) */}
+      <nav className="flex items-center space-x-2">
         {/* Selector de temas de escritorio */}
-        <div className="relative">
+        <div className="relative hidden md:block">
           <button
             onClick={() => setThemeMenuOpen(!themeMenuOpen)}
-            // Clases para que parezca un botón
             className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:bg-red-700 focus:outline-none transition-colors duration-200"
           >
             <IconBrush size={18} />
@@ -102,14 +99,14 @@ function Header({ onLoginClick }) {
         {!isLoggedIn ? (
           <button onClick={onLoginClick} className="flex items-center space-x-1 bg-red-700 hover:bg-red-800 py-2 px-4 rounded-lg transition-colors">
             <IconKey size={18} />
-            <span>Iniciar Sesión</span>
+            <span className="hidden md:block">Iniciar Sesión</span>
           </button>
         ) : (
           <div className="relative">
             <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center space-x-2 p-2 rounded-full hover:bg-red-700 transition-colors">
               <img src={userProfilePic} alt="Perfil" className="w-8 h-8 rounded-full border-2 border-white" />
-              <span className="font-medium">{userName.split(" ")[0]}</span>
-              <IconChevronDown size={16} className="transition-transform duration-200" style={{ transform: profileMenuOpen ? "rotate(180deg)" : "rotate(0deg)" }} />
+              <span className="font-medium hidden md:block">{userName.split(" ")[0]}</span>
+              <IconChevronDown size={16} className="hidden md:block transition-transform duration-200" style={{ transform: profileMenuOpen ? "rotate(180deg)" : "rotate(0deg)" }} />
             </button>
             {profileMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-md shadow-lg py-2 z-30">
@@ -133,8 +130,9 @@ function Header({ onLoginClick }) {
           </div>
         )}
       </nav>
-      {/* Menú lateral (móvil) */}
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 z-50 md:hidden flex flex-col ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+
+      {/* Menú lateral unificado para móvil y escritorio */}
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 z-50 flex flex-col ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="p-4 flex flex-col space-y-4 text-gray-800 dark:text-gray-100 flex-grow">
           <h2 className="text-lg font-bold">Menú de Navegación</h2>
           <hr className="border-gray-300 dark:border-gray-700" />
@@ -144,8 +142,8 @@ function Header({ onLoginClick }) {
               <span>{item.label}</span>
             </Link>
           ))}
-          {/* Selector de temas en menú móvil */}
-          <div className="flex flex-col space-y-2">
+          {/* Selector de temas en menú lateral */}
+          <div className="flex flex-col space-y-2 mt-4">
             <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">Tema de la aplicación</h3>
             <div className="relative">
               <button onClick={() => setThemeMenuOpen(!themeMenuOpen)} className="w-full flex justify-between items-center text-left text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3">
@@ -205,7 +203,7 @@ function Header({ onLoginClick }) {
       </div>
       {/* Overlay (oscurece el fondo) */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-black opacity-50 z-40 md:hidden" onClick={() => setMenuOpen(false)}></div>
+        <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={() => setMenuOpen(false)}></div>
       )}
     </header>
   );

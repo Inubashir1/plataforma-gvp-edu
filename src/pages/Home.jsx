@@ -1,5 +1,6 @@
 // src/pages/Home.jsx
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   IconArrowRight,
   IconUserPlus,
@@ -8,6 +9,9 @@ import {
   IconBook,
   IconFolder,
   IconLock,
+  IconBooks,
+  IconSpeakerphone,
+  IconRocket
 } from '@tabler/icons-react';
 import { useTheme } from '../contexts/useTheme';
 
@@ -47,19 +51,29 @@ const features = [
 function FeatureBlock({ title, description, icon }) {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef();
+  const observerRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => setIsVisible(entry.isIntersecting));
+    observerRef.current = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (observerRef.current) {
+            observerRef.current.unobserve(entry.target);
+          }
+        }
+      });
     }, { threshold: 0.5 }); 
 
-    if (domRef.current) {
-        observer.observe(domRef.current);
+    const currentDomRef = domRef.current;
+    if (currentDomRef) {
+        observerRef.current.observe(currentDomRef);
     }
     
     return () => {
-        if (domRef.current) {
-            observer.unobserve(domRef.current);
+        if (observerRef.current && currentDomRef) {
+            observerRef.current.unobserve(currentDomRef);
+            observerRef.current.disconnect();
         }
     };
   }, []);
@@ -83,24 +97,31 @@ function FeatureBlock({ title, description, icon }) {
 export default function Home({ onLoginClick }) {
   const { theme } = useTheme();
 
+  const handleScrollToFeatures = () => {
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <main className="min-h-screen p-4 md:p-8 bg-gray-100 dark:bg-gray-700 transition-colors duration-300 scroll-smooth">
+    <main className="min-h-screen p-4 md:p-8 bg-gray-100 dark:bg-gray-700 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Sección de Bienvenida */}
         <section className="text-center py-16 md:py-24 animate-fade-in">
           <h1 className="text-4xl md:text-6xl font-extrabold text-red-600 dark:text-red-500 mb-4">
-            Bienvenido a la Plataforma Educativa
+            Bienvenido a la Institución Educativa Gaston Vidal Porturas
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
             Accede a un mundo de conocimiento y herramientas diseñadas para tu crecimiento académico.
           </p>
-          <a
-            href="#features"
+          <button
+            onClick={handleScrollToFeatures}
             className="inline-flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-200 transform hover:scale-105 shadow-md"
           >
             <span>Explorar más</span>
             <IconArrowRight size={20} />
-          </a>
+          </button>
         </section>
 
         {/* Sección de Bloques de Características expandida */}
